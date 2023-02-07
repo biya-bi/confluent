@@ -36,8 +36,8 @@ services:
     image: confluentinc/cp-schema-registry
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://kafka:9092
-      SCHEMA_REGISTRY_HOST_NAME: localhost
-      SCHEMA_REGISTRY_LISTENERS: http://localhost:8081
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
       SCHEMA_REGISTRY_DEBUG: true
     ports:
       - 8081:8081
@@ -45,32 +45,39 @@ services:
       start_period: 10s
       interval: 10s
       retries: 20
-      test: curl --fail --silent --insecure http://localhost:8081/subjects --output /dev/null || exit 1
+      test: curl --fail --silent --insecure http://schema-registry:8081/subjects --output /dev/null || exit 1
     depends_on:
       kafka:
         condition: service_healthy
   connect:
-    image: cp-kafka-connect
+    image: cp-kafka-connect-standalone
     environment:
       CONNECT_BOOTSTRAP_SERVERS: kafka:9092
-      CONNECT_GROUP_ID: connect-cluster
-      CONNECT_CONFIG_STORAGE_TOPIC: connect-configs
-      CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets
-      CONNECT_STATUS_STORAGE_TOPIC: connect-statuses
-      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
-      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_KEY_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.avro.AvroConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_INTERNAL_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_KEY_CONVERTER_SCHEMAS_ENABLE: false
+      CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE: false
+      CONNECT_OFFSET_STORAGE_FILE_FILENAME: /var/lib/kafka/offsets/connect.offsets
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
-      CONNECT_REPLICATION_FACTOR: 1
-      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
-      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      DATASOURCE_NAME: m-sqlite-jdbc
+      DATASOURCE_CONNECTOR_CLASS: io.confluent.connect.jdbc.JdbcSourceConnector
+      DATASOURCE_TASKS_MAX: 1
+      DATASOURCE_CONNECTION_URL: jdbc:sqlite:university.db
+      DATASOURCE_MODE: incrementing
+      DATASOURCE_INCREMENTING_COLUMN_NAME: id
+      DATASOURCE_TOPIC_PREFIX: m-sqlite-jdbc-
     depends_on:
       schema-registry:
         condition: service_healthy
     ports:
       - 8083:8083
+    volumes:
+      - connect-offsets:/var/lib/kafka/offsets
 volumes:
   zookeeper-data:
   zookeeper-logs:
   kafka-logs:
+  connect-offsets:
