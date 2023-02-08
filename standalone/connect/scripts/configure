@@ -49,4 +49,4 @@ dub template "/etc/confluent/docker/${COMPONENT}.properties.template" "/etc/${CO
 # The connect-distributed script expects the log4j config at /etc/kafka/connect-log4j.properties.
 dub template "/etc/confluent/docker/log4j.properties.template" "/etc/kafka/connect-log4j.properties"
 
-dub template "/etc/confluent/docker/datasource.properties.template" "/etc/${COMPONENT}/datasource.properties"
+dub template "/etc/confluent/docker/standalone.properties.template" "/etc/${COMPONENT}/standalone.properties"

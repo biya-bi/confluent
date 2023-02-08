@@ -1,0 +1,4 @@
+{% set standalone_props = env_to_props('STANDALONE_', '') -%}
+{% for name, value in standalone_props.items() -%}
+{{name}}={{value}}
+{% endfor -%}

@@ -41,6 +41,4 @@ echo "===> Launching ${COMPONENT} ... "
 if [ -z "$CLASSPATH" ]; then
     export CLASSPATH="/etc/kafka-connect/jars/*"
 fi
-#exec connect-distributed /etc/"${COMPONENT}"/"${COMPONENT}".properties
-#exec connect-standalone /etc/schema-registry/connect-avro-standalone.properties $HOME/source-quickstart-sqlite_bkp.properties
-exec connect-standalone /etc/"${COMPONENT}"/"${COMPONENT}".properties /etc/"${COMPONENT}"/datasource.properties
+exec connect-standalone /etc/"${COMPONENT}"/"${COMPONENT}".properties /etc/"${COMPONENT}"/standalone.properties

@@ -62,13 +62,13 @@ services:
       CONNECT_INTERNAL_VALUE_CONVERTER_SCHEMAS_ENABLE: false
       CONNECT_OFFSET_STORAGE_FILE_FILENAME: /var/lib/kafka/offsets/connect.offsets
       CONNECT_PLUGIN_PATH: /usr/share/java,/usr/share/confluent-hub-components
-      DATASOURCE_NAME: university
-      DATASOURCE_CONNECTOR_CLASS: io.confluent.connect.jdbc.JdbcSourceConnector
-      DATASOURCE_TASKS_MAX: 1
-      DATASOURCE_CONNECTION_URL: jdbc:sqlite:university.db
-      DATASOURCE_MODE: incrementing
-      DATASOURCE_INCREMENTING_COLUMN_NAME: id
-      DATASOURCE_TOPIC_PREFIX: university-
+      STANDALONE_NAME: university
+      STANDALONE_CONNECTOR_CLASS: io.confluent.connect.jdbc.JdbcSourceConnector
+      STANDALONE_TASKS_MAX: 1
+      STANDALONE_CONNECTION_URL: jdbc:sqlite:university.db
+      STANDALONE_MODE: incrementing
+      STANDALONE_INCREMENTING_COLUMN_NAME: id
+      STANDALONE_TOPIC_PREFIX: university-
     depends_on:
       schema-registry:
         condition: service_healthy
