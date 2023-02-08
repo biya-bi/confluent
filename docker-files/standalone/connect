@@ -5,4 +5,3 @@ RUN bash -c "mkdir -p /var/lib/kafka/offsets && chown -R appuser:appuser /var/li
 COPY --chown=appuser:appuser ../standalone/connect/scripts/configure /etc/confluent/docker
 COPY --chown=appuser:appuser ../standalone/connect/scripts/launch /etc/confluent/docker
 COPY --chown=appuser:appuser ../standalone/datasource.properties.template /etc/confluent/docker
-COPY ../university.db .
