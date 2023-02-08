@@ -1,4 +1,7 @@
 DIR=$(dirname $0)
 
-docker build -t kafka-connect-standalone -f $DIR/docker-files/standalone/connect/Dockerfile $DIR
-docker build -t sqlite-standalone -f $DIR/docker-files/standalone/sqlite/Dockerfile $DIR/docker-files/standalone/sqlite
+STANDALONE_CONNECT_DIR=$DIR/docker-files/standalone/connect
+STANDALONE_SQLITE_DIR=$STANDALONE_CONNECT_DIR/sqlite
+
+docker build -t kafka-connect-standalone -f $STANDALONE_CONNECT_DIR/Dockerfile $DIR
+docker build -t sqlite-standalone -f $STANDALONE_SQLITE_DIR/Dockerfile $STANDALONE_SQLITE_DIR
